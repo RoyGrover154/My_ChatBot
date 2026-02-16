@@ -1,38 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>AI Coding Assistant</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <title>My AI ChatBot</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app">
 
-    <!-- Sidebar (optional, desktop) -->
-    <aside class="sidebar">
-      <div class="logo">✨ AI Chat</div>
-      <div class="history">
-        <p>Previous chats</p>
-      </div>
-    </aside>
+<div class="chat-container">
+    <div class="chat-header">
+        🤖 My AI Assistant
+    </div>
 
-    <!-- Main Chat -->
-    <main class="chat-container">
-      <header class="chat-header">
-        <h2>What can I help you with?</h2>
-      </header>
+    <div id="chat-box" class="chat-box"></div>
 
-      <div id="messages" class="chat-messages"></div>
+    <div class="input-area">
+        <input type="text" id="user-input" placeholder="Type your message..." />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
 
-      <footer class="chat-input">
-        <input id="input" type="text" placeholder="Ask anything..." />
-        <button onclick="send()">➤</button>
-      </footer>
-    </main>
-
-  </div>
-
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
-
 </html>
