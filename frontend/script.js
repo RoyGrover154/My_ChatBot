@@ -1,59 +1,37 @@
-const chatBox = document.getElementById("chat-box");
-const userInput = document.getElementById("user-input");
+async function send() {
+  const input = document.getElementById("input");
+  const messages = document.getElementById("messages");
+  const text = input.value.trim();
 
-async function sendMessage() {
-    const message = userInput.value.trim();
-    if (!message) return;
+  if (!text) return;
 
-    addMessage(message, "user");
-    userInput.value = "";
+  input.value = "";
 
-    // Show loading animation
-    const loadingDiv = document.createElement("div");
-    loadingDiv.classList.add("message", "bot");
-    loadingDiv.innerHTML = `
-        <div class="loading">
-            <span></span><span></span><span></span>
-        </div>
-    `;
-    chatBox.appendChild(loadingDiv);
-    scrollToBottom();
+  try {
+    const res = await fetch("/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message: text }),
+    });
 
-    try {
-        const response = await fetch("http://localhost:5000/chat", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ message })
-        });
+    const data = await res.json();
 
-        const data = await response.json();
+    // Clear UI
+    messages.innerHTML = "";
 
-        loadingDiv.remove();
-        addMessage(data.reply, "bot");
+    // Render full history
+    data.history.forEach(msg => {
+      const div = document.createElement("div");
+      div.className = msg.role === "User" ? "user" : "bot";
+      div.innerText = msg.content;
+      messages.appendChild(div);
+    });
 
-    } catch (error) {
-        loadingDiv.remove();
-        addMessage("Server error 😢", "bot");
-    }
+    messages.scrollTop = messages.scrollHeight;
+
+  } catch (err) {
+    messages.innerHTML += `<div class="bot">❌ Server error</div>`;
+  }
 }
-
-function addMessage(text, sender) {
-    const msgDiv = document.createElement("div");
-    msgDiv.classList.add("message", sender);
-    msgDiv.textContent = text;
-    chatBox.appendChild(msgDiv);
-    scrollToBottom();
-}
-
-function scrollToBottom() {
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-// Send message on Enter key
-userInput.addEventListener("keypress", function (e) {
-    if (e.key === "Enter") {
-        sendMessage();
-    }
-});
